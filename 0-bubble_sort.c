@@ -11,6 +11,9 @@ void bubble_sort(int *array, size_t size)
 	size_t i, rounds;
 	int tmp, not_sorted;
 
+	if (!array || size < 0)
+		return;
+
 	rounds = 0;
 
 	do {
