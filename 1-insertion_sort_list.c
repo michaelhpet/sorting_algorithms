@@ -7,66 +7,39 @@
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *head, *current, *curr_next;
+	listint_t *current, *tmp_current;
 
 	if (*list == NULL || (*list)->next == NULL)
 		return;
 
-	head = NULL;
-	current = *list;
+	current = (*list)->next;
 
 	while (current)
 	{
-		curr_next = current->next;
-		insert_node(&head, &current);
-		current = curr_next;
-	}
-
-	*list = head;
-}
-
-
-/**
- * insert_node - insert a node to a sorted doubly linked list
- * @list: double pointer to linked list
- * @node: node to add to linked list
- */
-void insert_node(listint_t **list, listint_t **node)
-{
-	listint_t *head, *current;
-
-	head = *list;
-	current = *node;
-
-	if (head == NULL)
-	{
-		current->next = NULL;
-		current->prev = NULL;
-		*list = current;
-		return;
-	}
-
-	if (current->n <= head->n)
-	{
-		current->next = head;
-		current->prev = head->prev;
-		head->prev = current;
-		*list = current;
-		return;
-	}
-
-	while (head->next) {
-		if (current->n <= head->next->n)
+		while (current->prev && current->n < current->prev->n)
 		{
-			current->next = head->next;
-			current->prev = head;
-			head->next->prev = current;
-			head->next = current;
-			return;
+
+			tmp_current = current;
+
+			if (current->next)
+				(current->next)->prev = tmp_current->prev;
+
+			(current->prev)->next = tmp_current->next;
+			current = current->prev;
+			tmp_current->prev = current->prev;
+			tmp_current->next = current;
+
+			if (current->prev)
+				(current->prev)->next = tmp_current;
+
+			current->prev = tmp_current;
+
+			if (tmp_current->prev == NULL)
+				*list = tmp_current;
+
+			print_list(*list);
+			current = current->prev;
 		}
-		head = head->next;
+		current = current->next;
 	}
-	current->next = NULL;
-	current->prev = head;
-	head->next = current;
 }
